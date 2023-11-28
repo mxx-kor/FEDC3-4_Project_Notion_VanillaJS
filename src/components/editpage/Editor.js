@@ -1,4 +1,4 @@
-import { validation } from '../../validation.js';
+import { validation, resolveXSS, preventXSS } from '../../validation.js';
 
 export default function Editor({ $target, initialState, onEdit }) {
   validation(new.target, 'Editor');
@@ -21,21 +21,24 @@ export default function Editor({ $target, initialState, onEdit }) {
   };
 
   this.render = () => {
-    $editor.querySelector('[name=title]').value = this.state.title;
-    $editor.querySelector('[name=content]').value = this.state.content;
+    $editor.querySelector('[name=title]').value = resolveXSS(this.state.title);
+    $editor.querySelector('[name=content]').value = resolveXSS(
+      this.state.content
+    );
   };
 
   this.render();
 
   $editor.addEventListener('keyup', (e) => {
     const { tagName: targetTag, value } = e.target;
+    const preventValue = preventXSS(value);
     let nextState = {};
     if (targetTag === 'INPUT') {
-      nextState = { ...this.state, title: value };
+      nextState = { ...this.state, title: preventValue };
     } else {
       nextState = {
         ...this.state,
-        content: value,
+        content: preventValue,
       };
     }
 
