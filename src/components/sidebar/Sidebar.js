@@ -106,9 +106,6 @@ export default function Sidebar({ $target, initialState }) {
 
   new NewRootDoc({
     $target: $sidebar,
-    initialState: {
-      text: '+ 페이지 추가',
-    },
     onClick: async () => {
       const $li = document.createElement('li');
       $li.className = 'docItem';
